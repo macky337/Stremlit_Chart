@@ -57,11 +57,20 @@ def plot_data(symbol_data, ticker_symbol, ma_selections):
 def main():
     st.sidebar.title('設定')
 
+    symbol_options = ['^DJI', '^IXIC', '^GSPC', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'meta', 'TSLA',
+                      'NVDA', 'PYPL', 'NFLX', 'CRM', 'INTC', 'ARM', 'CRWD', 'amd', 'adbe',
+                      '8411.T', '7735.T', '8035.T', '9984.T']
     default_symbols = ['AAPL', 'MSFT', 'GOOGL']
+
+    # 全選択ボタン
+    if st.sidebar.button('登録銘柄を全部選択'):
+        selected_symbols = symbol_options
+    else:
+        selected_symbols = default_symbols
+
     symbols = st.sidebar.multiselect('銘柄を選択してください',
-                                     options=['^DJI', '^IXIC', '^GSPC', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'meta', 'TSLA',
-                                              'NVDA', 'PYPL', 'NFLX', 'CRM', 'INTC', 'ARM', 'CRWD', 'amd', 'adbe',
-                                              '8411.T', '7735.T', '8035.T', '9984.T'], default=default_symbols)
+                                     options=symbol_options,
+                                     default=selected_symbols)
 
     years = st.sidebar.slider('期間(年)', min_value=1, max_value=10, value=3)
 
