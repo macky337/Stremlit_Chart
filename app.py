@@ -1,34 +1,32 @@
-import matplotlib.pyplot as plt
 import streamlit as st
 import yfinance as yf
+import pandas as pd
+import matplotlib.pyplot as plt
 
 
 def calculate_moving_average(prices, window):
     return prices.rolling(window=window).mean()
 
 
-def fetch_data(ticker_symbol, period_years):
+def fetch_data(ticker_symbol, period):
     ticker = yf.Ticker(ticker_symbol)
-    # yfinanceで期間を設定するには、"1y", "2y"などの形式を使用します。
-    # ここでは、入力された年数をこの形式に変換します。
-    period_str = f"{period_years}y"
-    df = ticker.history(period=period_str)
+    df = ticker.history(period=period)
     return df
 
 
 def plot_data(df, ticker_symbol, ma_selections):
     plt.figure(figsize=(10, 6))
+    plt.plot(df.index, df['Close'], label='Close Price', color='tab:blue')
 
-    plt.plot(df.index, df['Close'], label='Close Price', color='tab:red')
-
+    # 移動平均線の追加と凡例の復活
     for window in ma_selections:
         ma = calculate_moving_average(df['Close'], window)
-        plt.plot(df.index, ma, label=f'{window}D MA')
+        plt.plot(df.index, ma, label=f'{window}-day MA')
 
     plt.title(f'{ticker_symbol} - Closing Prices and Moving Averages')
     plt.xlabel('Date')
     plt.ylabel('Price')
-    plt.legend()
+    plt.legend()  # 凡例の表示
     st.pyplot(plt)
 
 
@@ -38,16 +36,20 @@ def main():
                       'CRM', 'INTC', 'ARMH', 'CRWD', 'AMD', 'ADBE', '8411.T', '7735.T', '8035.T', '9984.T']
     default_symbols = ['AAPL', 'MSFT', 'GOOGL']
 
-    selected_symbols = st.sidebar.multiselect('銘柄を選択してください', options=symbol_options, default=default_symbols)
+    if st.sidebar.button('全銘柄を選択'):
+        selected_symbols = symbol_options
+    else:
+        selected_symbols = st.sidebar.multiselect('銘柄を選択してください', options=symbol_options,
+                                                  default=default_symbols)
 
-    years = st.sidebar.slider('期間(年)', min_value=1, max_value=10, value=3)
+    # 期間の選択肢に3か月、6か月を追加
+    period = st.sidebar.selectbox('期間', options=['1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd'], index=3)
 
     ma_options = [5, 25, 100, 200]
-    default_ma = [5, 25, 100, 200]
-    ma_selections = st.sidebar.multiselect('移動平均線を選択', options=ma_options, default=default_ma)
+    ma_selections = st.sidebar.multiselect('移動平均線を選択', options=ma_options, default=[25, 100])
 
     for symbol in selected_symbols:
-        df = fetch_data(symbol, years)
+        df = fetch_data(symbol, period)
         if not df.empty:
             plot_data(df, symbol, ma_selections)
         else:
