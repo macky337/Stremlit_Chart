@@ -15,45 +15,60 @@ def fetch_data(ticker_symbol, period):
 
 
 def plot_data(df, ticker_symbol, ma_selections):
-    plt.figure(figsize=(10, 6))
-    plt.plot(df.index, df['Close'], label='Close Price', color='tab:blue')
+    fig, ax1 = plt.subplots(figsize=(10, 6))
 
-    # 移動平均線の追加と凡例の復活
+    color = 'tab:blue'
+    ax1.plot(df.index, df['Close'], label='Close Price', color=color)
+    ax1.set_xlabel('Date')
+    ax1.set_ylabel('Close Price', color=color)
+    ax1.tick_params(axis='y', labelcolor=color)
+
+    # 移動平均線の追加と凡例の表示
     for window in ma_selections:
         ma = calculate_moving_average(df['Close'], window)
-        plt.plot(df.index, ma, label=f'{window}-day MA')
+        ax1.plot(df.index, ma, label=f'{window}-day MA')
 
-    plt.title(f'{ticker_symbol} - Closing Prices and Moving Averages')
-    plt.xlabel('Date')
-    plt.ylabel('Price')
-    plt.legend()  # 凡例の表示
-    st.pyplot(plt)
+    # 出来高の追加
+    ax2 = ax1.twinx()
+    ax2.fill_between(df.index, 0, df['Volume'], color='tab:gray', alpha=0.3)
+    ax2.set_ylabel('Volume', color='tab:gray')
+    ax2.tick_params(axis='y', labelcolor='tab:gray')
+
+    ax1.legend(loc='upper left')
+    plt.title(f'{ticker_symbol} - Closing Prices, Moving Averages, and Volume')
+    st.pyplot(fig)
 
 
 def main():
     st.sidebar.title('設定')
+
+    # 銘柄追加のインプットボックス
+    add_symbol = st.sidebar.text_input('銘柄コードを追加', '')
+    button_clicked = st.sidebar.button('追加')
+
     symbol_options = ['^DJI', '^IXIC', '^GSPC', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'META', 'TSLA', 'NVDA', 'PYPL', 'NFLX',
                       'CRM', 'INTC', 'ARMH', 'CRWD', 'AMD', 'ADBE', '8411.T', '7735.T', '8035.T', '9984.T']
-    default_symbols = ['AAPL', 'MSFT', 'GOOGL']
+    if add_symbol and button_clicked:
+        symbol_options.append(add_symbol.upper())
 
+    default_symbols = ['AAPL', 'MSFT', 'GOOGL']  # default_symbolsの定義を追加
+    # 「全銘柄を選択」ボタンの復活
     if st.sidebar.button('全銘柄を選択'):
         selected_symbols = symbol_options
     else:
-        selected_symbols = st.sidebar.multiselect('銘柄を選択してください', options=symbol_options,
-                                                  default=default_symbols)
+        selected_symbols = st.sidebar.multiselect('銘柄を選択してください', options=symbol_options, default=default_symbols)
 
-    # 期間の選択肢に3か月、6か月を追加
     period = st.sidebar.selectbox('期間', options=['1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd'], index=3)
 
     ma_options = [5, 25, 100, 200]
-    ma_selections = st.sidebar.multiselect('移動平均線を選択', options=ma_options, default=[25, 100])
+    ma_selections = st.sidebar.multiselect('移動平均線を選択', options=ma_options, default=[25, 100, 200])
 
     for symbol in selected_symbols:
         df = fetch_data(symbol, period)
         if not df.empty:
             plot_data(df, symbol, ma_selections)
         else:
-            st.write(f'{symbol}: データの取得に失敗しました。')
+            st.error(f'{symbol}: データの取得に失敗しました。')
 
 
 if __name__ == "__main__":
