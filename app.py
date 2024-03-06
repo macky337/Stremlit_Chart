@@ -18,7 +18,7 @@ def fetch_data(ticker_symbol, period_years):
             1
         )
     except YahooFinanceError as e:
-        print(e.message)
+        st.error(f"データの取得中にエラーが発生しました: {e.message}")
         return None
     return symbol_data
 
