@@ -52,7 +52,7 @@ def main():
     # 銘柄追加のインプットボックス
     add_symbol = st.sidebar.text_input('銘柄コードを追加', '')
 
-    symbol_options = ['^DJI', '^IXIC', '^GSPC', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'META', 'TSLA', 'NVDA', 'PYPL', 'NFLX', 'CRM', 'INTC', 'ARMH', 'CRWD', 'AMD', 'ADBE', '8411.T', '7735.T', '8035.T', '9984.T']
+    symbol_options = ['^DJI', '^IXIC', '^GSPC', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'META', 'TSLA', 'NVDA', 'PYPL', 'NFLX', 'CRM', 'INTC', 'ARM', 'CRWD', 'AMD', 'ADBE', '8411.T', '7735.T', '8035.T', '9984.T']
 
     if st.sidebar.button('追加') and add_symbol:
         symbol_options.append(add_symbol.upper())
