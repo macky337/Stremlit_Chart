@@ -71,7 +71,7 @@ def main():
     else:
         selected_symbols = st.sidebar.multiselect('銘柄を選択してください', options=st.session_state.symbol_options,
                                                   default=['AAPL', 'MSFT', 'GOOGL'])
-    period = st.sidebar.selectbox('期間', options=['1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd'], index=3)
+    period = st.sidebar.selectbox('期間', options=['1mo', '3mo', '6mo', '1y', '3y', '5y', '10y', 'ytd'], index=3)
 
     ma_options = [5, 25, 100, 200]
     ma_selections = st.sidebar.multiselect('移動平均線を選択', options=ma_options, default=[25, 100, 200])
