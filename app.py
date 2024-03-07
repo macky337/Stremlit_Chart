@@ -49,19 +49,28 @@ def plot_data(df, ticker_symbol, ma_selections):
 def main():
     st.sidebar.title('設定')
 
+    # 初期銘柄リスト
+    default_symbol_options = ['^DJI', '^IXIC', '^GSPC', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'META', 'TSLA', 'NVDA', 'PYPL',
+                              'NFLX', 'CRM', 'INTC', 'ARM', 'CRWD', 'AMD', 'ADBE', '8411.T', '7735.T', '8035.T',
+                              '9984.T']
+
+    # セッションステートに銘柄リストを初期化
+    if 'symbol_options' not in st.session_state:
+        st.session_state.symbol_options = default_symbol_options
+
     # 銘柄追加のインプットボックス
     add_symbol = st.sidebar.text_input('銘柄コードを追加', '')
 
-    symbol_options = ['^DJI', '^IXIC', '^GSPC', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'META', 'TSLA', 'NVDA', 'PYPL', 'NFLX', 'CRM', 'INTC', 'ARM', 'CRWD', 'AMD', 'ADBE', '8411.T', '7735.T', '8035.T', '9984.T']
-
     if st.sidebar.button('追加') and add_symbol:
-        symbol_options.append(add_symbol.upper())
+        # セッションステートの銘柄リストを更新
+        st.session_state.symbol_options.append(add_symbol.upper())
 
+    # 「全銘柄を選択」ボタン
     if st.sidebar.button('全銘柄を選択'):
-        selected_symbols = symbol_options
+        selected_symbols = st.session_state.symbol_options
     else:
-        selected_symbols = st.sidebar.multiselect('銘柄を選択してください', options=symbol_options, default=['AAPL', 'MSFT', 'GOOGL'])
-
+        selected_symbols = st.sidebar.multiselect('銘柄を選択してください', options=st.session_state.symbol_options,
+                                                  default=['AAPL', 'MSFT', 'GOOGL'])
     period = st.sidebar.selectbox('期間', options=['1mo', '3mo', '6mo', '1y', '2y', '5y', '10y', 'ytd'], index=3)
 
     ma_options = [5, 25, 100, 200]
