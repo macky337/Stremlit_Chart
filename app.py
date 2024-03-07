@@ -81,7 +81,7 @@ def main():
         if not df.empty:
             plot_data(df, symbol, ma_selections)
             last_price, change, percent_change = display_last_price_and_change(df)
-            st.write(f"最新{symbol}の終値: {last_price:.2f}, 前日比: {change:.2f} ({percent_change:.2f}%)")
+            st.write(f"{symbol}の終値: {last_price:.2f}, 前日比: {change:.2f} ({percent_change:.2f}%)")
         else:
             st.error(f'{symbol}: データの取得に失敗しました。')
 
@@ -95,7 +95,7 @@ def main():
             if not df_single.empty:
                 plot_data(df_single, single_symbol, ma_selections)
                 last_price, change, percent_change = display_last_price_and_change(df_single)
-                st.write(f"最新{single_symbol}の終値: {last_price:.2f}, 前日比: {change:.2f} ({percent_change:.2f}%)")
+                st.write(f"{single_symbol}の終値: {last_price:.2f}, 前日比: {change:.2f} ({percent_change:.2f}%)")
             else:
                 st.error(f'{single_symbol}: データの取得に失敗しました。')
 
