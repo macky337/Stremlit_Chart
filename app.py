@@ -1,7 +1,7 @@
+import matplotlib.pyplot as plt
 import streamlit as st
 import yfinance as yf
-import pandas as pd
-import matplotlib.pyplot as plt
+
 
 def calculate_moving_average(prices, window):
     """指定されたウィンドウでの移動平均を計算します。"""
@@ -72,7 +72,7 @@ def main():
         if not df.empty:
             plot_data(df, symbol, ma_selections)
             last_price, change, percent_change = display_last_price_and_change(df)
-            st.write(f"最新の終値: {last_price:.2f}, 前日比: {change:.2f} ({percent_change:.2f}%)")
+            st.write(f"最新{symbol}の終値: {last_price:.2f}, 前日比: {change:.2f} ({percent_change:.2f}%)")
         else:
             st.error(f'{symbol}: データの取得に失敗しました。')
 
