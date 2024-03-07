@@ -85,5 +85,20 @@ def main():
         else:
             st.error(f'{symbol}: データの取得に失敗しました。')
 
+    single_symbol = st.sidebar.text_input('単独銘柄表示', '')
+
+    # 単独銘柄表示ボタン
+    if st.sidebar.button('単独銘柄表示'):
+        if single_symbol:  # 単独銘柄が入力されていれば、その銘柄のみを処理
+            single_symbol = single_symbol.upper()  # 銘柄コードを大文字に統一
+            df_single = fetch_data(single_symbol, period)
+            if not df_single.empty:
+                plot_data(df_single, single_symbol, ma_selections)
+                last_price, change, percent_change = display_last_price_and_change(df_single)
+                st.write(f"最新{single_symbol}の終値: {last_price:.2f}, 前日比: {change:.2f} ({percent_change:.2f}%)")
+            else:
+                st.error(f'{single_symbol}: データの取得に失敗しました。')
+
+
 if __name__ == "__main__":
     main()
