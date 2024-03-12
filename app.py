@@ -7,11 +7,13 @@ def calculate_moving_average(prices, window):
     """指定されたウィンドウでの移動平均を計算します。"""
     return prices.rolling(window=window).mean()
 
+
 def fetch_data(ticker_symbol, period):
     """指定された期間で銘柄のデータを取得します。"""
     ticker = yf.Ticker(ticker_symbol)
     df = ticker.history(period=period)
     return df
+
 
 def display_last_price_and_change(df):
     """最新の終値と前日比を計算します。"""
@@ -20,6 +22,7 @@ def display_last_price_and_change(df):
     change = last_price - previous_price
     percent_change = (change / previous_price) * 100
     return last_price, change, percent_change
+
 
 def plot_data(df, ticker_symbol, ma_selections):
     """株価、移動平均、および出来高をプロットします。"""
@@ -45,6 +48,7 @@ def plot_data(df, ticker_symbol, ma_selections):
     ax1.legend(loc='upper left')
     plt.title(f'{ticker_symbol} - Closing Prices, Moving Averages, and Volume')
     st.pyplot(fig)
+
 
 def main():
     st.sidebar.title('設定')
