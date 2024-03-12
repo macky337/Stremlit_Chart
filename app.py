@@ -7,13 +7,11 @@ def calculate_moving_average(prices, window):
     """指定されたウィンドウでの移動平均を計算します。"""
     return prices.rolling(window=window).mean()
 
-
 def fetch_data(ticker_symbol, period):
     """指定された期間で銘柄のデータを取得します。"""
     ticker = yf.Ticker(ticker_symbol)
     df = ticker.history(period=period)
     return df
-
 
 def display_last_price_and_change(df):
     """最新の終値と前日比を計算します。"""
@@ -22,7 +20,6 @@ def display_last_price_and_change(df):
     change = last_price - previous_price
     percent_change = (change / previous_price) * 100
     return last_price, change, percent_change
-
 
 def plot_data(df, ticker_symbol, ma_selections):
     """株価、移動平均、および出来高をプロットします。"""
@@ -48,7 +45,6 @@ def plot_data(df, ticker_symbol, ma_selections):
     ax1.legend(loc='upper left')
     plt.title(f'{ticker_symbol} - Closing Prices, Moving Averages, and Volume')
     st.pyplot(fig)
-
 
 def main():
     st.sidebar.title('設定')
@@ -85,24 +81,9 @@ def main():
         if not df.empty:
             plot_data(df, symbol, ma_selections)
             last_price, change, percent_change = display_last_price_and_change(df)
-            st.write(f"{symbol}の終値: {last_price:.2f}, 前日比: {change:.2f} ({percent_change:.2f}%)")
+            st.write(f"最新{symbol}の終値: {last_price:.2f}, 前日比: {change:.2f} ({percent_change:.2f}%)")
         else:
             st.error(f'{symbol}: データの取得に失敗しました。')
-
-    single_symbol = st.sidebar.text_input('単独銘柄表示', '')
-
-    # 単独銘柄表示ボタン
-    if st.sidebar.button('単独銘柄表示'):
-        if single_symbol:  # 単独銘柄が入力されていれば、その銘柄のみを処理
-            single_symbol = single_symbol.upper()  # 銘柄コードを大文字に統一
-            df_single = fetch_data(single_symbol, period)
-            if not df_single.empty:
-                plot_data(df_single, single_symbol, ma_selections)
-                last_price, change, percent_change = display_last_price_and_change(df_single)
-                st.write(f"{single_symbol}の終値: {last_price:.2f}, 前日比: {change:.2f} ({percent_change:.2f}%)")
-            else:
-                st.error(f'{single_symbol}: データの取得に失敗しました。')
-
 
 if __name__ == "__main__":
     main()
